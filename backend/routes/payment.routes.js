@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/auth.middleware');
+const { getPayments, getPayment, createPayment } = require('../controllers/payment.controller');
 
-// TODO (P2): implement payment routes
-router.get('/', protect, (req, res) => {
-  res.json({ message: 'payment route — coming soon' });
-});
+router.get('/', protect, getPayments);
+router.get('/:id', protect, getPayment);
+router.post('/', protect, authorize('admin', 'manager'), createPayment);
 
 module.exports = router;
