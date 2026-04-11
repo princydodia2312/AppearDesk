@@ -3,14 +3,60 @@
 @tailwind utilities;
 
 @layer base {
-  * { box-sizing: border-box; }
-  body { @apply bg-white text-gray-900 antialiased; }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    @apply bg-[#f5f5f5] text-black antialiased selection:bg-black selection:text-white;
+  }
+}
+
+@layer utilities {
+  .bg-noise {
+    position: relative;
+    background-color: #f5f5f5;
+  }
+  .bg-noise::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 50;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+  }
+
+  .text-stroke {
+    -webkit-text-stroke: 1px black;
+    color: transparent;
+  }
 }
 
 @layer components {
-  .btn         { @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed; }
-  .btn-primary { @apply btn bg-gray-900 text-white hover:bg-gray-700; }
-  .btn-outline { @apply btn border border-gray-300 text-gray-700 hover:bg-gray-50; }
-  .input       { @apply w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent; }
-  .card        { @apply bg-white rounded-xl border border-gray-200; }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 font-medium text-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5 active:scale-95;
+  }
+  .btn-primary {
+    @apply btn bg-black text-white hover:bg-black/80;
+  }
+  .btn-outline {
+    @apply btn border border-black text-black hover:bg-black hover:text-white bg-transparent;
+  }
+  
+  .input {
+    @apply w-full px-4 py-3 bg-white/50 border border-[#d7d7d7] text-sm transition-all duration-300 focus:outline-none focus:border-black focus:bg-white;
+  }
+  
+  .card {
+    @apply bg-transparent border border-[#d7d7d7] hover:border-[#a3a3a3] transition-colors duration-300;
+  }
+  
+  .glass-card {
+    @apply bg-[#f5f5f5]/80 backdrop-blur-md border border-[#d7d7d7];
+  }
+
+  .badge {
+    @apply inline-flex items-center px-4 py-1.5 text-xs font-bold tracking-[0.2em] uppercase transition-colors border border-black;
+  }
 }

@@ -17,11 +17,10 @@ const invoiceSchema = new mongoose.Schema(
     tax:           { type: Number, default: 0 },
     discount:      { type: Number, default: 0 },
     total:         { type: Number, default: 0 },
-    amountPaid:    { type: Number, default: 0 },
-    balanceDue:    { type: Number, default: 0 },
+
     status: {
       type: String,
-      enum: ['draft', 'sent', 'paid', 'partial', 'overdue', 'cancelled'],
+      enum: ['draft', 'sent', 'paid', 'overdue', 'cancelled'],
       default: 'draft',
     },
     dueDate:       { type: Date },
@@ -37,7 +36,6 @@ invoiceSchema.pre('save', async function (next) {
     const count = await mongoose.model('Invoice').countDocuments();
     this.invoiceNumber = `INV-${String(count + 1).padStart(5, '0')}`;
   }
-  this.balanceDue = this.total - this.amountPaid;
   next();
 });
 

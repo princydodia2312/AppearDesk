@@ -8,7 +8,7 @@ const STATUS_OPTIONS = ['All', 'draft', 'sent', 'paid', 'partial', 'overdue', 'c
 const badgeClass = (status) => {
   const map = {
     draft: 'badge-gray', sent: 'badge-blue', paid: 'badge-green',
-    partial: 'badge-yellow', overdue: 'badge-red', cancelled: 'badge-red',
+    overdue: 'badge-red', cancelled: 'badge-red',
   }
   return map[status] || 'badge-gray'
 }
@@ -61,8 +61,6 @@ export default function Invoices() {
                   <th className="px-4 py-3 font-medium text-gray-500">Invoice No.</th>
                   <th className="px-4 py-3 font-medium text-gray-500">Customer</th>
                   <th className="px-4 py-3 font-medium text-gray-500">Total (₹)</th>
-                  <th className="px-4 py-3 font-medium text-gray-500">Paid (₹)</th>
-                  <th className="px-4 py-3 font-medium text-gray-500">Balance Due (₹)</th>
                   <th className="px-4 py-3 font-medium text-gray-500">Status</th>
                   <th className="px-4 py-3 font-medium text-gray-500">Due Date</th>
                 </tr>
@@ -71,40 +69,33 @@ export default function Invoices() {
                 {isLoading ? (
                   [...Array(5)].map((_, i) => (
                     <tr key={i} className="animate-pulse">
-                      {[...Array(7)].map((_, j) => (
+                      {[...Array(5)].map((_, j) => (
                         <td key={j} className="px-4 py-3"><div className="h-4 bg-gray-200 rounded w-3/4" /></td>
                       ))}
                     </tr>
                   ))
                 ) : invoices.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-4 py-12 text-center">
+                    <td colSpan={5} className="px-4 py-12 text-center">
                       <FileText size={40} className="mx-auto text-gray-300 mb-3" />
                       <p className="text-gray-500 font-medium">No invoices found</p>
                       <p className="text-gray-400 text-xs mt-1">Invoices will appear here once they are generated</p>
                     </td>
                   </tr>
                 ) : (
-                  invoices.map((inv) => {
-                    const total = inv.totalAmount ?? inv.total ?? 0
-                    const paid = inv.amountPaid ?? inv.paidAmount ?? 0
-                    const balance = inv.balanceDue ?? (total - paid)
-                    return (
-                      <tr
-                        key={inv._id}
-                        onClick={() => setSelected(inv)}
-                        className="hover:bg-gray-50 transition-colors cursor-pointer"
-                      >
-                        <td className="px-4 py-3 font-medium text-gray-900 font-mono text-xs">{inv.invoiceNumber || inv._id?.slice(-8)}</td>
-                        <td className="px-4 py-3 text-gray-500">{inv.customer?.name || inv.customerName || '—'}</td>
-                        <td className="px-4 py-3 text-gray-900">₹{total.toLocaleString('en-IN')}</td>
-                        <td className="px-4 py-3 text-green-600">₹{paid.toLocaleString('en-IN')}</td>
-                        <td className="px-4 py-3 text-gray-900 font-medium">₹{balance.toLocaleString('en-IN')}</td>
-                        <td className="px-4 py-3"><span className={badgeClass(inv.status)}>{inv.status || 'draft'}</span></td>
-                        <td className="px-4 py-3 text-gray-500 text-xs">{formatDate(inv.dueDate)}</td>
-                      </tr>
-                    )
-                  })
+                  invoices.map((inv) => (
+                    <tr
+                      key={inv._id}
+                      onClick={() => setSelected(inv)}
+                      className="hover:bg-gray-50 transition-colors cursor-pointer"
+                    >
+                      <td className="px-4 py-3 font-medium text-gray-900 font-mono text-xs">{inv.invoiceNumber || inv._id?.slice(-8)}</td>
+                      <td className="px-4 py-3 text-gray-500">{inv.customer?.name || inv.customerName || '—'}</td>
+                      <td className="px-4 py-3 text-gray-900 font-bold">₹{(inv.total || 0).toLocaleString('en-IN')}</td>
+                      <td className="px-4 py-3"><span className={badgeClass(inv.status)}>{inv.status || 'draft'}</span></td>
+                      <td className="px-4 py-3 text-gray-500 text-xs">{formatDate(inv.dueDate)}</td>
+                    </tr>
+                  ))
                 )}
               </tbody>
             </table>
@@ -157,10 +148,10 @@ export default function Invoices() {
                     <tbody className="divide-y divide-gray-100">
                       {selected.items.map((item, idx) => (
                         <tr key={idx}>
-                          <td className="px-3 py-2 text-gray-900">{item.description || item.name || '—'}</td>
-                          <td className="px-3 py-2 text-gray-500 text-right">{item.quantity}</td>
-                          <td className="px-3 py-2 text-gray-500 text-right">₹{(item.unitPrice || item.price || 0).toLocaleString('en-IN')}</td>
-                          <td className="px-3 py-2 text-gray-900 text-right">₹{((item.quantity || 0) * (item.unitPrice || item.price || 0)).toLocaleString('en-IN')}</td>
+                          <td className="px-3 py-2 text-gray-900">{item.description || '—'}</td>
+                          <td className="px-3 py-2 text-gray-500 text-right">{item.qty}</td>
+                          <td className="px-3 py-2 text-gray-500 text-right">₹{(item.unitPrice || 0).toLocaleString('en-IN')}</td>
+                          <td className="px-3 py-2 text-gray-900 text-right">₹{(item.total || (item.qty * item.unitPrice) || 0).toLocaleString('en-IN')}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -170,12 +161,13 @@ export default function Invoices() {
 
               {/* Totals */}
               <div className="border-t border-gray-200 pt-4 space-y-1 text-sm text-right">
-                <p className="text-gray-500">Subtotal: <span className="text-gray-900 font-medium">₹{(selected.subtotal ?? selected.totalAmount ?? selected.total ?? 0).toLocaleString('en-IN')}</span></p>
+                <p className="text-gray-500">Subtotal: <span className="text-gray-900 font-medium">₹{(selected.subtotal || 0).toLocaleString('en-IN')}</span></p>
                 {selected.tax != null && <p className="text-gray-500">Tax: <span className="text-gray-900 font-medium">₹{selected.tax.toLocaleString('en-IN')}</span></p>}
-                {selected.discount != null && <p className="text-gray-500">Discount: <span className="text-gray-900 font-medium">-₹{selected.discount.toLocaleString('en-IN')}</span></p>}
-                <p className="text-gray-700 font-semibold">Total: ₹{(selected.totalAmount ?? selected.total ?? 0).toLocaleString('en-IN')}</p>
-                <p className="text-green-600">Amount Paid: ₹{(selected.amountPaid ?? selected.paidAmount ?? 0).toLocaleString('en-IN')}</p>
-                <p className="text-gray-900 font-semibold text-base">Balance Due: ₹{(selected.balanceDue ?? ((selected.totalAmount ?? selected.total ?? 0) - (selected.amountPaid ?? selected.paidAmount ?? 0))).toLocaleString('en-IN')}</p>
+                {selected.discount != null && selected.discount > 0 && <p className="text-gray-500">Discount: <span className="text-emerald-600 font-medium">-₹{selected.discount.toLocaleString('en-IN')}</span></p>}
+                <p className="text-gray-900 font-bold text-lg">Total: ₹{(selected.total || 0).toLocaleString('en-IN')}</p>
+                {selected.status === 'paid' && selected.paidAt && (
+                   <p className="text-xs text-green-600 font-medium">Fully Paid on {formatDate(selected.paidAt)}</p>
+                )}
               </div>
             </div>
           </div>

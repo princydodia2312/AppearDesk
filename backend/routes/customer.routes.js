@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/auth.middleware');
+const { getCustomers, getCustomer, createCustomer, updateCustomer, deleteCustomer } = require('../controllers/customer.controller');
 
-// TODO (P2): implement customer routes
-router.get('/', protect, (req, res) => {
-  res.json({ message: 'customer route — coming soon' });
-});
+router.get('/', protect, getCustomers);
+router.get('/:id', protect, getCustomer);
+router.post('/', protect, authorize('admin', 'manager'), createCustomer);
+router.put('/:id', protect, authorize('admin', 'manager'), updateCustomer);
+router.delete('/:id', protect, authorize('admin'), deleteCustomer);
 
 module.exports = router;

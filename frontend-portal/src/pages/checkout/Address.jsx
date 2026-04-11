@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { ChevronLeft } from 'lucide-react';
 import useCartStore from '../../store/cart.store';
 
 export default function Address() {
@@ -33,6 +34,11 @@ export default function Address() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
+      <Link to="/cart" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 mb-6 transition-colors">
+        <ChevronLeft className="h-4 w-4 mr-1" />
+        Back to Cart
+      </Link>
+      
       {/* Progress */}
       <div className="flex items-center justify-center mb-10">
         <div className="flex items-center text-sm font-medium">

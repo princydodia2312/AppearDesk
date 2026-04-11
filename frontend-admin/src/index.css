@@ -7,35 +7,52 @@
     box-sizing: border-box;
   }
   body {
-    @apply bg-gray-50 text-gray-900 antialiased;
+    @apply bg-slate-50 text-slate-900 antialiased selection:bg-indigo-500 selection:text-white;
+  }
+}
+
+@layer utilities {
+  .bg-mesh {
+    background-color: #f8fafc;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(253,16%,7%,0.03) 0, transparent 50%), 
+      radial-gradient(at 50% 0%, hsla(225,39%,30%,0.03) 0, transparent 50%), 
+      radial-gradient(at 100% 0%, hsla(339,49%,30%,0.03) 0, transparent 50%);
   }
 }
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5 active:scale-95;
   }
   .btn-primary {
-    @apply btn bg-primary-600 text-white hover:bg-primary-700;
+    @apply btn bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/40 hover:from-indigo-500 hover:to-violet-500;
   }
   .btn-outline {
-    @apply btn border border-gray-300 text-gray-700 hover:bg-gray-50;
+    @apply btn border-2 border-slate-200/80 bg-white/50 backdrop-blur-sm text-slate-700 hover:bg-white hover:border-slate-300 shadow-sm;
   }
   .btn-danger {
-    @apply btn bg-red-600 text-white hover:bg-red-700;
+    @apply btn bg-gradient-to-r from-red-500 to-rose-500 text-white shadow-md shadow-red-500/20 hover:shadow-lg hover:shadow-red-500/40;
   }
+  
   .input {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+    @apply w-full px-4 py-2.5 bg-white/60 backdrop-blur-[2px] border border-slate-200 rounded-xl text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 focus:bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)];
   }
+  
   .card {
-    @apply bg-white rounded-xl border border-gray-200 shadow-sm;
+    @apply bg-white/80 backdrop-blur-md rounded-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow duration-300;
   }
+  
+  .glass-card {
+    @apply bg-white/40 backdrop-blur-xl rounded-3xl border border-white/80 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)];
+  }
+
   .badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase transition-colors;
   }
-  .badge-green  { @apply badge bg-green-100 text-green-800; }
-  .badge-red    { @apply badge bg-red-100 text-red-800; }
-  .badge-yellow { @apply badge bg-yellow-100 text-yellow-800; }
-  .badge-blue   { @apply badge bg-blue-100 text-blue-800; }
-  .badge-gray   { @apply badge bg-gray-100 text-gray-800; }
+  .badge-green  { @apply badge bg-emerald-100/80 text-emerald-700 border border-emerald-200/50; }
+  .badge-red    { @apply badge bg-rose-100/80 text-rose-700 border border-rose-200/50; }
+  .badge-yellow { @apply badge bg-amber-100/80 text-amber-700 border border-amber-200/50; }
+  .badge-blue   { @apply badge bg-indigo-100/80 text-indigo-700 border border-indigo-200/50; }
+  .badge-gray   { @apply badge bg-slate-100/80 text-slate-700 border border-slate-200/50; }
 }

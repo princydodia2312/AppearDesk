@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/auth.middleware');
+const { getInvoices, getInvoice, createInvoice, updateInvoice, updateInvoiceStatus, deleteInvoice } = require('../controllers/invoice.controller');
 
-// TODO (P2): implement invoice routes
-router.get('/', protect, (req, res) => {
-  res.json({ message: 'invoice route — coming soon' });
-});
+router.get('/', protect, getInvoices);
+router.get('/:id', protect, getInvoice);
+router.post('/', protect, authorize('admin', 'manager'), createInvoice);
+router.put('/:id', protect, authorize('admin', 'manager'), updateInvoice);
+router.put('/:id/status', protect, authorize('admin', 'manager'), updateInvoiceStatus);
+router.delete('/:id', protect, authorize('admin'), deleteInvoice);
 
 module.exports = router;

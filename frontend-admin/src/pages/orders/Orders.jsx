@@ -9,6 +9,7 @@ const badgeClass = (status) => {
   const map = {
     pending: 'badge-yellow', confirmed: 'badge-blue', processing: 'badge-blue',
     shipped: 'badge-blue', delivered: 'badge-green', cancelled: 'badge-red',
+    paid: 'badge-green', unpaid: 'badge-red'
   }
   return map[status] || 'badge-gray'
 }
@@ -114,7 +115,7 @@ export default function Orders() {
                       <td className="px-4 py-3 font-medium text-gray-900 font-mono text-xs">{o.orderNumber || o._id?.slice(-8)}</td>
                       <td className="px-4 py-3 text-gray-500">{o.customer?.name || o.customerName || '—'}</td>
                       <td className="px-4 py-3 text-gray-500">{o.items?.length ?? 0}</td>
-                      <td className="px-4 py-3 text-gray-900">₹{o.totalAmount?.toLocaleString('en-IN') ?? o.grandTotal?.toLocaleString('en-IN') ?? '0'}</td>
+                      <td className="px-4 py-3 text-gray-900">₹{o.total?.toLocaleString('en-IN') ?? '0'}</td>
                       <td className="px-4 py-3"><span className={badgeClass(o.status)}>{o.status || 'pending'}</span></td>
                       <td className="px-4 py-3 text-gray-500 text-xs">{formatDate(o.createdAt)}</td>
                     </tr>
@@ -171,10 +172,10 @@ export default function Orders() {
                     <tbody className="divide-y divide-gray-100">
                       {selected.items.map((item, idx) => (
                         <tr key={idx}>
-                          <td className="px-3 py-2 text-gray-900">{item.product?.name || item.name || '—'}</td>
-                          <td className="px-3 py-2 text-gray-500 text-right">{item.quantity}</td>
-                          <td className="px-3 py-2 text-gray-500 text-right">₹{item.unitPrice?.toLocaleString('en-IN') ?? item.price?.toLocaleString('en-IN') ?? '0'}</td>
-                          <td className="px-3 py-2 text-gray-900 text-right">₹{((item.quantity || 0) * (item.unitPrice || item.price || 0)).toLocaleString('en-IN')}</td>
+                          <td className="px-3 py-2 text-gray-900">{item.productName || item.product?.name || '—'}</td>
+                          <td className="px-3 py-2 text-gray-500 text-right">{item.qty}</td>
+                          <td className="px-3 py-2 text-gray-500 text-right">₹{item.unitPrice?.toLocaleString('en-IN') ?? '0'}</td>
+                          <td className="px-3 py-2 text-gray-900 text-right">₹{(item.total || (item.qty * item.unitPrice) || 0).toLocaleString('en-IN')}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -184,10 +185,10 @@ export default function Orders() {
 
               {/* Totals */}
               <div className="border-t border-gray-200 pt-4 space-y-1 text-sm text-right">
-                <p className="text-gray-500">Subtotal: <span className="text-gray-900 font-medium">₹{(selected.subtotal ?? selected.totalAmount ?? 0).toLocaleString('en-IN')}</span></p>
-                {selected.tax != null && <p className="text-gray-500">Tax: <span className="text-gray-900 font-medium">₹{selected.tax.toLocaleString('en-IN')}</span></p>}
-                {selected.discount != null && <p className="text-gray-500">Discount: <span className="text-gray-900 font-medium">-₹{selected.discount.toLocaleString('en-IN')}</span></p>}
-                <p className="text-gray-700 font-semibold text-base">Grand Total: ₹{(selected.grandTotal ?? selected.totalAmount ?? 0).toLocaleString('en-IN')}</p>
+                <p className="text-gray-500">Subtotal: <span className="text-gray-900 font-medium">₹{(selected.subtotal || 0).toLocaleString('en-IN')}</span></p>
+                {selected.taxAmount != null && <p className="text-gray-500">Tax: <span className="text-gray-900 font-medium">₹{selected.taxAmount.toLocaleString('en-IN')}</span></p>}
+                {selected.discountAmount != null && selected.discountAmount > 0 && <p className="text-gray-500">Discount: <span className="text-emerald-600 font-medium">-₹{selected.discountAmount.toLocaleString('en-IN')}</span></p>}
+                <p className="text-gray-900 font-bold text-lg">Grand Total: ₹{(selected.total || 0).toLocaleString('en-IN')}</p>
               </div>
 
               {/* Status update */}
