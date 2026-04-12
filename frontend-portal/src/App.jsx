@@ -24,6 +24,7 @@ import MyOrders   from './pages/account/MyOrders'
 import OrderDetail from './pages/account/OrderDetail'
 import MyInvoices from './pages/account/MyInvoices'
 import InvoiceDetail from './pages/account/InvoiceDetail'
+import ChatWidget    from './components/ChatWidget'
 
 const ProtectedRoute = ({ children }) => {
   const { token } = useAuthStore()
@@ -32,6 +33,7 @@ const ProtectedRoute = ({ children }) => {
 
 export default function App() {
   return (
+    <>
     <Routes>
       {/* Public routes with store layout (header + footer) */}
       <Route element={<StoreLayout />}>
@@ -64,5 +66,7 @@ export default function App() {
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    <ChatWidget />
+    </>
   )
 }
