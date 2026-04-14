@@ -1,4 +1,4 @@
-// AppearDesk AI Chatbot - Added by Person 4
+// AppearDesk AI Chatbot - Integrated by Princy Dodia | Person 4 | Groq Llama Fashion Assistant
 (function () {
   const SYSTEM_PROMPT = `You are a friendly and helpful fashion assistant for AppearDesk, a clothing website. 
 You help customers with:
